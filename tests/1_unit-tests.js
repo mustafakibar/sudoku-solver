@@ -1,7 +1,7 @@
 const chai = require('chai');
 const assert = chai.assert;
 
-const Solver = require('../controllers/sudoku-solver.js');
+const Solver = require('../controllers/sudoku-solver.js').SudokuSolver;
 const { puzzlesAndSolutions } = require('../controllers/puzzle-strings.js');
 
 const solver = new Solver();
@@ -37,7 +37,7 @@ suite('UnitTests', () => {
       );
     });
 
-    test('Logic handles a valid invalid row placement', () => {
+    test('Logic handles a invalid row placement', () => {
       assert.isFalse(
         solver.checkRowPlacement(
           puzzlesAndSolutions[0][0],
@@ -57,7 +57,7 @@ suite('UnitTests', () => {
       );
     });
 
-    test('Logic handles a valid invalid column placement', () => {
+    test('Logic handles a invalid column placement', () => {
       assert.isFalse(
         solver.checkColPlacement(
           puzzlesAndSolutions[0][0],
@@ -104,10 +104,10 @@ suite('UnitTests', () => {
     });
 
     test('Solver returns the expected solution for an incomplete puzzle', () => {
-      puzzlesAndSolutions.forEach(([solve, solution]) => {
-        const { solved, puzzle } = solver.solve(solve);
+      puzzlesAndSolutions.forEach(([solve, orgSolution]) => {
+        const { solved, solution } = solver.solve(solve);
         assert.isTrue(solved);
-        assert.equal(puzzle, solution);
+        assert.equal(solution, orgSolution);
       });
     });
   });
