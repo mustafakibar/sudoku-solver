@@ -1,3 +1,9 @@
-# Sudoku Solver
+**FreeCodeCamp**- Information Security and Quality Assurance
+------
 
-This is the boilerplate for the Sudoku Solver project. Instructions to complete your project can be found at https://www.freecodecamp.org/learn/quality-assurance/quality-assurance-projects/sudoku-solver
+Project Issue Tracker
+
+1) SET NODE_ENV to `test` without quotes and set DB_CONNECTION_URI to your mongo connection string in .env file
+2) Complete the project in `routes/api.js` or by creating a handler/controller
+3) You will add any security features to `server.js`
+4) You will create all of the functional tests in `tests/2_functional-tests.js`

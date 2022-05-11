@@ -5,6 +5,7 @@ const CONFLICT_ROW = 'row';
 const CONFLICT_COLUMN = 'column';
 const CONFLICT_REGION = 'region';
 
+const ERR_REQUIRED_FIELDS_MISSING = 'Required field(s) missing';
 const ERR_REQUIRED_FIELD_MISSING = 'Required field missing';
 const ERR_INVALID_LENGTH = 'Expected puzzle to be 81 characters long';
 const ERR_INVALID_CHARACTER = 'Invalid characters in puzzle';
@@ -16,7 +17,7 @@ class SudokuSolver {
   validate(puzzle) {
     let error;
 
-    if (!puzzle) {
+    if (puzzle == null || puzzle == '') {
       error = ERR_REQUIRED_FIELD_MISSING;
     } else if (puzzle.length != 81) {
       error = ERR_INVALID_LENGTH;
@@ -30,20 +31,21 @@ class SudokuSolver {
     };
   }
 
-  createIndexData(rawRow, rawColumn) {
-    // If column is null, row will be used as the index
-    if (!rawColumn) {
-      return this.createIndexData(Math.floor(rawRow / 9) + 1, (rawRow % 9) + 1);
-    }
+  createIndexDataByIndex(index) {
+    return this.createIndexData(Math.floor(index / 9) + 1, (index % 9) + 1);
+  }
 
+  createIndexData(rawRow, rawColumn) {
     const row = isNaN(rawRow)
       ? rawRow.toUpperCase().charCodeAt(0) - 64
       : rawRow;
+
+    const column = Number(rawColumn);
+
     if (row <= 0 || row > 9) {
       return { error: ERR_INVALID_COORDINATE };
     }
 
-    const column = Number(rawColumn);
     if (column <= 0 || column > 9) {
       return { error: ERR_INVALID_COORDINATE };
     }
@@ -84,9 +86,12 @@ class SudokuSolver {
       y: BASE * (Math.ceil(indexData.row / BASE) - 1),
     };
 
+    const targetIndex = (indexData.row - 1) * 9 + indexData.column - 1;
+
     for (let x = OFFSET.x; x < OFFSET.x + BASE; x++) {
       for (let y = OFFSET.y; y < OFFSET.y + BASE; y++) {
-        if (puzzle[x + y * 9] === String(value)) {
+        const index = x + y * 9;
+        if (targetIndex != index && puzzle[index] === String(value)) {
           return false;
         }
       }
@@ -104,20 +109,21 @@ class SudokuSolver {
   }
 
   check(puzzle, row, column, value) {
-    const indexData = this.createIndexData(row, column);
-    return !indexData ? false : this.checkByIndexData(puzzle, indexData, value);
+    return this.checkBase(puzzle, this.createIndexData(row, column), value);
   }
 
-  checkByIndexData(puzzle, indexData, value) {
-    if (indexData.error) {
-      return indexData;
+  checkBase(puzzle, indexData, value) {
+    const validate = this.validate(puzzle);
+    if (!validate.valid) {
+      return validate;
     }
 
-    const validate = this.validate(puzzle);
-    if (!validate.valid) return validate;
-
-    if (value <= 0 || value > 9) {
+    if (isNaN(value) || value <= 0 || value > 9) {
       return { valid: false, error: ERR_INVALID_VALUE };
+    }
+
+    if (!indexData || indexData.error) {
+      return indexData;
     }
 
     const conflict = [];
@@ -149,10 +155,10 @@ class SudokuSolver {
     while (index < 81) {
       const value = puzzle[index];
       if (value === '.') {
-        const indexData = this.createIndexData(index);
+        const indexData = this.createIndexDataByIndex(index);
         let guess = null;
         inner: for (let num = 1; num <= 9; num++) {
-          if (this.checkByIndexData(puzzle, indexData, num).valid) {
+          if (this.checkBase(puzzle, indexData, num).valid) {
             // There is a more than one guess, so we need to break out of the inner loop
             if (guess) {
               guess = null;
@@ -194,6 +200,7 @@ module.exports = {
     ERR_INVALID_COORDINATE,
     ERR_INVALID_VALUE,
     ERR_REQUIRED_FIELD_MISSING,
+    ERR_REQUIRED_FIELDS_MISSING,
     ERR_INVALID_LENGTH,
     ERR_PUZZLE_CANNOT_BE_SOLVED,
   },

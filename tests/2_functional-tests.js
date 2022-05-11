@@ -13,11 +13,11 @@ chai.use(chaiHttp);
 
 suite('Functional Tests', () => {
   suite('Solve', () => {
-    test('Solve a puzzle with valid puzzle string: POST request to /api/solve', (done) => {
+    test(`Solve a puzzle with valid puzzle string: POST request to ${PATH_SOLVE}`, (done) => {
       let [puzzle, solution] = puzzlesAndSolutions[0];
       chai
         .request(server)
-        .post('/api/solve')
+        .post(PATH_SOLVE)
         .send({ puzzle })
         .end((err, res) => {
           if (err) return console.error(err);
@@ -27,10 +27,10 @@ suite('Functional Tests', () => {
         });
     });
 
-    test('Solve a puzzle with missing puzzle string: POST request to /api/solve', (done) => {
+    test(`Solve a puzzle with missing puzzle string: POST request to ${PATH_SOLVE}`, (done) => {
       chai
         .request(server)
-        .post('/api/solve')
+        .post(PATH_SOLVE)
         .send({})
         .end((err, res) => {
           if (err) return console.error(err);
@@ -40,10 +40,10 @@ suite('Functional Tests', () => {
         });
     });
 
-    test('Solve a puzzle with invalid characters: POST request to /api/solve', (done) => {
+    test(`Solve a puzzle with invalid characters: POST request to ${PATH_SOLVE}`, (done) => {
       chai
         .request(server)
-        .post('/api/solve')
+        .post(PATH_SOLVE)
         .send({
           puzzle: 'mustafa@kibar.pro' + puzzlesAndSolutions[0][1].substring(17),
         })
@@ -55,10 +55,10 @@ suite('Functional Tests', () => {
         });
     });
 
-    test('Solve a puzzle with incorrect length: POST request to /api/solve', (done) => {
+    test(`Solve a puzzle with incorrect length: POST request to ${PATH_SOLVE}`, (done) => {
       chai
         .request(server)
-        .post('/api/solve')
+        .post(PATH_SOLVE)
         .send({ puzzle: puzzlesAndSolutions[0][1].substring(1) })
         .end((err, res) => {
           if (err) return console.error(err);
@@ -68,10 +68,10 @@ suite('Functional Tests', () => {
         });
     });
 
-    test('Solve a puzzle that cannot be solved: POST request to /api/solve', (done) => {
+    test(`Solve a puzzle that cannot be solved: POST request to ${PATH_SOLVE}`, (done) => {
       chai
         .request(server)
-        .post('/api/solve')
+        .post(PATH_SOLVE)
         .send({ puzzle: `18181818${puzzlesAndSolutions[0][0].substring(8)}` })
         .end((err, res) => {
           if (err) return console.error(err);
@@ -84,10 +84,10 @@ suite('Functional Tests', () => {
   });
 
   suite('Check', () => {
-    test('Check a puzzle placement with all fields: POST request to /api/check', (done) => {
+    test(`Check a puzzle placement with all fields: POST request to ${PATH_CHECK}`, (done) => {
       chai
         .request(server)
-        .post('/api/check')
+        .post(PATH_CHECK)
         .send({
           puzzle: puzzlesAndSolutions[0][0],
           coordinate: 'B1',
@@ -101,10 +101,10 @@ suite('Functional Tests', () => {
         });
     });
 
-    test('Check a puzzle placement with single placement conflict: POST request to /api/check', (done) => {
+    test(`Check a puzzle placement with single placement conflict: POST request to ${PATH_CHECK}`, (done) => {
       chai
         .request(server)
-        .post('/api/check')
+        .post(PATH_CHECK)
         .send({
           puzzle: puzzlesAndSolutions[0][0],
           coordinate: 'B1',
@@ -120,10 +120,10 @@ suite('Functional Tests', () => {
         });
     });
 
-    test('Check a puzzle placement with multiple placement conflict: POST request to /api/check', (done) => {
+    test(`Check a puzzle placement with multiple placement conflict: POST request to ${PATH_CHECK}`, (done) => {
       chai
         .request(server)
-        .post('/api/check')
+        .post(PATH_CHECK)
         .send({
           puzzle: puzzlesAndSolutions[0][0],
           coordinate: 'B3',
@@ -140,10 +140,10 @@ suite('Functional Tests', () => {
         });
     });
 
-    test('Check a puzzle placement with all placement conflict: POST request to /api/check', (done) => {
+    test(`Check a puzzle placement with all placement conflict: POST request to ${PATH_CHECK}`, (done) => {
       chai
         .request(server)
-        .post('/api/check')
+        .post(PATH_CHECK)
         .send({
           puzzle: puzzlesAndSolutions[0][0],
           coordinate: 'B1',
@@ -161,23 +161,23 @@ suite('Functional Tests', () => {
         });
     });
 
-    test('Check a puzzle placement with missing required fields: POST request to /api/check', (done) => {
+    test(`Check a puzzle placement with missing required fields: POST request to ${PATH_CHECK}`, (done) => {
       chai
         .request(server)
-        .post('/api/check')
+        .post(PATH_CHECK)
         .send({})
         .end((err, res) => {
           if (err) return console.error(err);
 
-          assert.equal(res.body.error, CONTANTS.ERR_REQUIRED_FIELD_MISSING);
+          assert.equal(res.body.error, CONTANTS.ERR_REQUIRED_FIELDS_MISSING);
           done();
         });
     });
 
-    test('Check a puzzle placement with invalid characters: POST request to /api/check', (done) => {
+    test(`Check a puzzle placement with invalid character: POST request to ${PATH_CHECK}`, (done) => {
       chai
         .request(server)
-        .post('/api/check')
+        .post(PATH_CHECK)
         .send({
           puzzle: `mustafa@kibar.pro${puzzlesAndSolutions[0][0].substring(17)}`,
           coordinate: 'B1',
@@ -191,10 +191,10 @@ suite('Functional Tests', () => {
         });
     });
 
-    test('Check a puzzle placement with incorrect length: POST request to /api/check', (done) => {
+    test(`Check a puzzle placement with incorrect length: POST request to ${PATH_CHECK}`, (done) => {
       chai
         .request(server)
-        .post('/api/check')
+        .post(PATH_CHECK)
         .send({
           puzzle: puzzlesAndSolutions[0][0].substring(1),
           coordinate: 'B1',
@@ -208,10 +208,10 @@ suite('Functional Tests', () => {
         });
     });
 
-    test('Check a puzzle placement with invalid placement coordinate: POST request to /api/check', (done) => {
+    test(`Check a puzzle placement with invalid placement coordinate: POST request to ${PATH_CHECK}`, (done) => {
       chai
         .request(server)
-        .post('/api/check')
+        .post(PATH_CHECK)
         .send({
           puzzle: puzzlesAndSolutions[0][0],
           coordinate: 'B10',
@@ -225,10 +225,10 @@ suite('Functional Tests', () => {
         });
     });
 
-    test('Check a puzzle placement with invalid placement value: POST request to /api/check', (done) => {
+    test(`Check a puzzle placement with invalid placement value: POST request to ${PATH_CHECK}`, (done) => {
       chai
         .request(server)
-        .post('/api/check')
+        .post(PATH_CHECK)
         .send({
           puzzle: puzzlesAndSolutions[0][0],
           coordinate: 'B1',
