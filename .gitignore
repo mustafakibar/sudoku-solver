@@ -2,6 +2,6 @@
 .env
 .glitch-assets
 node_modules/
-.idea/*.idea/
+.idea/
 .vscode/
 .DS_Store
